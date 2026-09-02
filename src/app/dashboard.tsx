@@ -362,6 +362,34 @@ function CalendarBoard({
   );
 }
 
+function CatalogRows({
+  sections,
+  onOpen,
+}: {
+  sections: CatalogSection[];
+  onOpen: (item: Sponsorship) => void;
+}) {
+  if (sections.length === 0) {
+    return <SponsorshipCards groups={[]} onOpen={onOpen} />;
+  }
+
+  return (
+    <div className="space-y-8">
+      {sections.map((section) => (
+        <section key={section.id} aria-labelledby={`catalog-${section.id}`}>
+          <h2
+            id={`catalog-${section.id}`}
+            className="mb-4 text-xl font-semibold text-foreground"
+          >
+            {section.title}
+          </h2>
+          <SponsorshipCards groups={section.groups} onOpen={onOpen} />
+        </section>
+      ))}
+    </div>
+  );
+}
+
 function SponsorshipCards({
   groups,
   onOpen,
@@ -887,6 +915,22 @@ function formatSeasonLabel(item: Sponsorship) {
   return `${item.season ?? "Unico"}${
     item.episodeTracking?.isCompleteByTmdb ? " completa" : ""
   }`;
+}
+
+function createCatalogSections(groups: SponsorshipGroup[]): CatalogSection[] {
+  const titles: Record<SponsorshipCategory, string> = {
+    Anime: "Animes",
+    Serie: "Séries",
+    Filme: "Filmes",
+  };
+
+  return (["Anime", "Serie", "Filme"] as SponsorshipCategory[])
+    .map((category) => ({
+      id: category.toLowerCase(),
+      title: titles[category],
+      groups: groups.filter((group) => group.category === category),
+    }))
+    .filter((section) => section.groups.length > 0);
 }
 
 function groupSponsorships(items: Sponsorship[]) {
