@@ -2,8 +2,11 @@ import { SponsorshipDashboard } from "@/app/dashboard";
 import { getScheduleEntries, getSponsorships } from "@/lib/sponsorships";
 import type { Sponsorship } from "@/lib/sponsorships";
 import type { ScheduleEntry } from "@/lib/sponsorships";
+import { connection } from "next/server";
 
 export default async function Home() {
+  await connection();
+
   let sponsorships: Sponsorship[] = [];
   let schedule: ScheduleEntry[] = [];
   let loadError: string | undefined;
